@@ -11,17 +11,17 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 
   1. Add `cerberus` to your list of dependencies in `mix.exs`:
 
-    ```elixir
+ ```elixir
     def deps do
       [{:cerberus, "~> 0.2.0"}]
     end
-    ```
+```
 
   2. Ensure `cerberus` is started before your application:
 
-    ```elixir
+```elixir
     def application do
       [applications: [:cerberus]]
     end
-    ```
+```
 
