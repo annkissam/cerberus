@@ -20,6 +20,7 @@ defmodule Cerberus.Mixfile do
 
   defp deps do
     [
+      {:credo, "~> 0.5", only: [:dev, :test]},
       {:plug, "~> 1.0"}
     ]
   end
