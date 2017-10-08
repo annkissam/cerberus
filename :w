@@ -49,32 +49,10 @@ defmodule Cerberus.Controller do
   defmacro __using__(opts) do
     except = Keyword.get(opts, :except, [])
     handler = Keyword.get(opts, :handler, Cerberus.Handlers.NotAuthorized)
-    policy = Keyword.get(opts, :policy, :not_given)
-    usrfn = Keyword.get(opts, :usrfn, & &1.assigns[:current_user])
 
     quote do
-      # Ideally...
-      # plug Cerberus.Plug.EnsureAuthorized, [handler: unquote(handler)]
-      #   when not action in unquote(except)
-
-      def authorize(conn, user, resource, action) do
-        sanctioned? = case unquote(policy) do
-          :not_given -> Cerberus.sanctioned?(user, action, resource)
-          mod -> Cerberus.sanctioned?(mod, user, action, resource)
-        end
-
-        case sanctioned? do
-          true -> conn |> Conn.put_private(:cerberus_auth_performed, true)
-          false -> apply(unquote(handler), :call, [conn])
-        end
-      end
-
-      def auth_scope(user, scope, action) do
-        case unquoute(policy) do
-          :not_given -> Cerberus.auth_scope(user, scope, action)
-          mod -> Cerberus.auth_scope(mod, user, scope, action)
-        end
-      end
+      plug Cerberus.Plug.EnsureAuthorized, [handler: handler]
+        when not action in except
     end
   end
 end
