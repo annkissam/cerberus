@@ -18,5 +18,11 @@ defmodule Cerberus do
   end
 
   @spec fetch_policy_module(any) :: module | :error
-  def fetch_policy_module(arg), do: Cerberus.PolicyFinder.call(arg)
+  def fetch_policy_module(arg) do
+    case Cerberus.PolicyFinder.call(arg) do
+      {:error, nil} -> raise "No Policy for nil object"
+      {:error, mod} -> raise "Policy not found: #{mod}"
+      {:ok, mod} -> mod
+    end
+  end
 end

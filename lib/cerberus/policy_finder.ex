@@ -37,16 +37,16 @@ defmodule Cerberus.PolicyFinder do
   @spec call(any) :: module | :error
   def call(arg), do: policy_module(arg)
 
-  defp policy_module(nil), do: :error
+  defp policy_module(nil), do: {:error, nil}
   defp policy_module(%{from: {source, schema}})
     when is_binary(source) and is_atom(schema), do: policy_module(schema)
   defp policy_module(%{__struct__: module}), do: policy_module(module)
   defp policy_module(module) when is_atom(module) do
     try do
-      Module.safe_concat(module, "Policy")
+      {:ok, Module.safe_concat(module, "Policy")}
     rescue
-      ArgumentError -> :error
+      ArgumentError -> {:error, "#{module}.Policy"}
     end
   end
-  defp policy_module(_), do: :error
+  defp policy_module(args), do: {:error, args}
 end
